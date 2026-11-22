@@ -10,8 +10,8 @@ Aplicación full-stack de e-commerce de comida desarrollada como Trabajo Prácti
 ## Estructura del proyecto
 
 ```text
-├── backend/     # API REST (FastAPI + SQLModel + PostgreSQL)
-├── frontend/    # SPA (React + TypeScript + Vite + TailwindCSS)
+├── api/     # API REST (FastAPI + SQLModel + PostgreSQL)
+├── client/    # SPA (React + TypeScript + Vite + TailwindCSS)
 └── README.md
 ```
 
@@ -49,11 +49,11 @@ uvicorn app.main:app --reload
 
 ### Seed inicial
 
-| Campo      | Valor                  |
-| :--------- | :--------------------- |
-| Email      | `admin@foodstore.com`  |
-| Contraseña | `admin1234`            |
-| Rol        | `admin`                |
+| Campo      | Valor                 |
+| :--------- | :-------------------- |
+| Email      | `admin@foodstore.com` |
+| Contraseña | `admin1234`           |
+| Rol        | `admin`               |
 
 ---
 
