@@ -1,0 +1,228 @@
+### Variables
+@baseUrl = http://127.0.0.1:8000
+@contentType = application/json
+
+
+###############################################
+# CATEGORÍAS
+###############################################
+
+### 1. Crear categoría - Pizzas
+POST {{baseUrl}}/categorias/
+Content-Type: {{contentType}}
+
+{
+  "nombre": "Pizzas",
+  "descripcion": "Pizzas artesanales con masa fresca",
+  "disponible": true
+}
+
+### 2. Crear categoría - Bebidas
+POST {{baseUrl}}/categorias/
+Content-Type: {{contentType}}
+
+{
+  "nombre": "Bebidas",
+  "descripcion": "Gaseosas, jugos naturales y agua",
+  "disponible": true
+}
+
+### 3. Listar categorías
+GET {{baseUrl}}/categorias/
+
+### 4. Obtener categoría por ID
+GET {{baseUrl}}/categorias/1
+
+### 5. Actualizar categoría (PUT)
+PUT {{baseUrl}}/categorias/1
+Content-Type: {{contentType}}
+
+{
+  "nombre": "Pizzas Artesanales",
+  "descripcion": "Pizzas con masa madre y ingredientes frescos",
+  "disponible": true
+}
+
+### 6. Desactivar categoría (borrado lógico vía PUT)
+PUT {{baseUrl}}/categorias/2/desactivar
+
+### 7. Eliminar categoría (borrado lógico vía DELETE)
+DELETE {{baseUrl}}/categorias/2
+
+
+###############################################
+# PRODUCTOS
+###############################################
+
+### 8. Crear producto - Muzzarella
+POST {{baseUrl}}/productos/
+Content-Type: {{contentType}}
+
+{
+  "nombre": "Pizza Muzzarella",
+  "descripcion": "Pizza clásica con mozzarella y salsa de tomate",
+  "precio_base": "1500.50",
+  "imagen_url": [
+    "https://ejemplo.com/muzza1.jpg",
+    "https://ejemplo.com/muzza2.jpg"
+  ],
+  "disponible": true,
+  "stock": 20,
+  "stock_minimo": 5
+}
+
+### 9. Crear producto - Coca-Cola
+POST {{baseUrl}}/productos/
+Content-Type: {{contentType}}
+
+{
+  "nombre": "Coca-Cola 1.5L",
+  "descripcion": "Gaseosa sabor cola",
+  "precio_base": "800",
+  "imagen_url": ["https://ejemplo.com/coca.jpg"],
+  "disponible": true,
+  "stock": 3,
+  "stock_minimo": 10
+}
+
+### 10. Listar productos
+GET {{baseUrl}}/productos/
+
+### 11. Obtener producto por ID
+GET {{baseUrl}}/productos/1
+
+### 12. Actualizar producto (PUT)
+PUT {{baseUrl}}/productos/1
+Content-Type: {{contentType}}
+
+{
+  "nombre": "Pizza Muzzarella Grande",
+  "descripcion": "Pizza grande con mozzarella y salsa de tomate",
+  "precio_base": "1800.00",
+  "imagen_url": ["https://ejemplo.com/muzza-grande.jpg"],
+  "disponible": true,
+  "stock": 25,
+  "stock_minimo": 5
+}
+
+### 13. Consultar estado de stock
+GET {{baseUrl}}/productos/2/stock
+
+### 14. Desactivar producto (borrado lógico vía PUT)
+PUT {{baseUrl}}/productos/2/desactivar
+
+### 15. Eliminar producto (borrado lógico vía DELETE)
+DELETE {{baseUrl}}/productos/2
+
+
+###############################################
+# PRODUCTO - CATEGORÍA (relación N:M)
+###############################################
+
+### 16. Asociar Pizza Muzzarella (id=1) con Pizzas (id=1)
+POST {{baseUrl}}/producto-categoria/
+Content-Type: {{contentType}}
+
+{
+  "producto_id": 1,
+  "categoria_id": 1
+}
+
+### 17. Listar todas las relaciones
+GET {{baseUrl}}/producto-categoria/
+
+### 18. Obtener relación por ID
+GET {{baseUrl}}/producto-categoria/1
+
+### 19. Eliminar relación
+DELETE {{baseUrl}}/producto-categoria/1
+
+### 20. Verificar que la relación ya no existe (debe dar 404)
+GET {{baseUrl}}/producto-categoria/1
+
+
+###############################################
+# PEDIDOS
+###############################################
+
+### 21. Crear un pedido válido (201 Created)
+# Usa los productos 1 y 2 (si no existen, crealos primero en los requests 8 y 9).
+POST {{baseUrl}}/pedidos/
+Content-Type: {{contentType}}
+
+{
+  "detalles": [
+    { "producto_id": 1, "cantidad": 2 },
+    { "producto_id": 2, "cantidad": 1 }
+  ]
+}
+
+### 22. Listar todos los pedidos activos (200 OK)
+GET {{baseUrl}}/pedidos/
+
+### 23. Obtener un pedido por ID con sus detalles (200 OK)
+GET {{baseUrl}}/pedidos/1
+
+### 24. Actualizar el estado del pedido (200 OK)
+PUT {{baseUrl}}/pedidos/1
+Content-Type: {{contentType}}
+
+{
+  "estado": "CONFIRMADO"
+}
+
+### 25. Error 422: Pedido sin detalles
+POST {{baseUrl}}/pedidos/
+Content-Type: {{contentType}}
+
+{
+  "detalles": []
+}
+
+### 26. Error 422: Producto repetido
+POST {{baseUrl}}/pedidos/
+Content-Type: {{contentType}}
+
+{
+  "detalles": [
+    { "producto_id": 1, "cantidad": 2 },
+    { "producto_id": 1, "cantidad": 3 }
+  ]
+}
+
+### 27. Error 422: Cantidad menor a 1
+POST {{baseUrl}}/pedidos/
+Content-Type: {{contentType}}
+
+{
+  "detalles": [
+    { "producto_id": 1, "cantidad": 0 }
+  ]
+}
+
+### 28. Error 404 y ROLLBACK: Producto inexistente
+# El producto 9999 no existe. Debe fallar atómicamente (rollback).
+# Verificar después con GET /pedidos/ que NO se guardó nada.
+POST {{baseUrl}}/pedidos/
+Content-Type: {{contentType}}
+
+{
+  "detalles": [
+    { "producto_id": 1, "cantidad": 1 },
+    { "producto_id": 9999, "cantidad": 1 }
+  ]
+}
+
+### 29. Error 422: Estado inválido en actualización
+PUT {{baseUrl}}/pedidos/1
+Content-Type: {{contentType}}
+
+{
+  "estado": "ESTADO_INVENTADO"
+}
+
+### 30. Eliminar un pedido - Borrado lógico (204 No Content)
+DELETE {{baseUrl}}/pedidos/1
+
+### 31. Error 404: Buscar el pedido eliminado
+GET {{baseUrl}}/pedidos/1

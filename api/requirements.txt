@@ -1,0 +1,7 @@
+fastapi[standard]
+sqlmodel
+psycopg[binary]
+python-dotenv
+python-jose[cryptography]
+bcrypt
+email-validator
