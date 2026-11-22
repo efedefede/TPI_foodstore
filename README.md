@@ -26,7 +26,7 @@ Aplicación full-stack de e-commerce de comida desarrollada como Trabajo Prácti
 
 ### Variables de entorno
 
-Copiar `backend/.env.example` como `backend/.env` y completar:
+Copiar `api/.env.example` como `api/.env` y completar:
 
 ```env
 DATABASE_URL=postgresql+psycopg://usuario:contraseña@localhost:5432/foodstore
@@ -38,7 +38,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 ### Instalación y ejecución
 
 ```bash
-cd backend
+cd api
 python -m venv .venv
 source .venv/Scripts/activate   # Windows (Git Bash) — en Linux/Mac: source .venv/bin/activate
 pip install -r requirements.txt
@@ -66,7 +66,7 @@ uvicorn app.main:app --reload
 
 ### Variables de entorno
 
-Copiar `frontend/.env.example` como `frontend/.env`:
+Copiar `client/.env.example` como `client/.env`:
 
 ```env
 VITE_API_URL=http://localhost:8000
@@ -77,7 +77,7 @@ VITE_API_URL=http://localhost:8000
 ### Instalación y ejecución (desarrollo)
 
 ```bash
-cd frontend
+cd client
 pnpm install
 pnpm dev
 ```
